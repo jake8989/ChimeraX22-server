@@ -32,8 +32,6 @@ import QuestionModel, {
   Question,
   QuestionAnswerType,
 } from '../models/questions';
-// import { forEach } from "lodash";
-// import { updateSpreadSheet } from "./utils";
 env.config();
 
 const razorpay = new Razorpay({
@@ -281,9 +279,6 @@ export default class MutationClass {
       const updatedTeam = await TeamModel.findByIdAndUpdate(team._id, {
         status: PaymentStatus.PAID,
       });
-      // if (team.city === 'Pune') {
-      //   updateSpreadSheet(team.teamName, team.teamStatus, team._id);
-      // }
       return updatedTeam;
     } catch (e) {
       // console.log(e);

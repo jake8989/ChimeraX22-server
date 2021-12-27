@@ -65,14 +65,6 @@ app.use(
   }
 );
 
-// app.get(
-//   '/playground',
-//   expressPlayground({
-//     endpoint: '/graphql',
-//     subscriptionEndpoint: '/graphql',
-//   })
-// );
-
 mongoose
   .connect(process.env.DB_URL)
   .then(() =>
