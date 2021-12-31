@@ -7,10 +7,9 @@ import {
   TeamResponse,
   QuizDetailsResponse,
 } from './registerInput';
-import InvitationModel, { Status } from '../models/invitation';
+import InvitationModel, { Invitation, Status } from '../models/invitation';
 import QuestionModel from '../models/questions';
 import TeamModel, { TeamStatus } from '../models/team';
-import invitation from '../models/invitation';
 import { Question } from '../models/questions';
 import user from '../models/user';
 
@@ -40,34 +39,47 @@ export default class QueryClass {
     };
   }
 
-  // @Query((returns) => [User])
-  // async getSingleUsers(@Ctx() context: Context) {
-  //   const singleUsers = await UserModel.find({ step: Step.CHOOSE_TEAM });
-  //   const sentInvitations = await InvitationModel.find({
-  //     sendersId: context.user._id,
-  //   });
+  @Query((returns) => [User])
+  async getSingleUsers(@Ctx() context: Context) {
+    const singleUsers: User[] = await UserModel.find({
+      step: Step.CHOOSE_TEAM,
+      city: context.user.city,
+    });
+    const sentInvitations: Invitation[] = await InvitationModel.find({
+      sendersId: context.user._id,
+    });
+    const alreadysentInvititaion = sentInvitations.map((invititaion) => {
+      return invititaion.receiversId.toString();
+    });
+    const filteredUsers = singleUsers.filter((user) => {
+      const exist = alreadysentInvititaion.find(
+        (invity) => invity === user._id.toString()
+      );
+      if (user._id.toString() === context.user._id.toString() || Boolean(exist))
+        return false;
+      return true;
+    });
+    // const filteredUsers = filter(singleUsers, (user) => {
+    //   const exists = find(
+    //     sentInvitations,
+    //     (invitation) => invitation.receiversId === user._id.toString()
+    //   );
+    //   // console.log(
+    //   //   context.user._id,
+    //   //   user._id,
+    //   //   context.user._id.toString() == user._id
+    //   // );
+    //   if (
+    //     user._id.toString() === context.user._id.toString() ||
+    //     Boolean(exists)
+    //   ) {
+    //     return false;
+    //   }
+    //   return true;
+    // });
 
-  //   const filteredUsers = filter(singleUsers, (user) => {
-  //     const exists = find(
-  //       sentInvitations,
-  //       (invitation) => invitation.receiversId === user._id.toString()
-  //     );
-  //     // console.log(
-  //     //   context.user._id,
-  //     //   user._id,
-  //     //   context.user._id.toString() == user._id
-  //     // );
-  //     if (
-  //       user._id.toString() === context.user._id.toString() ||
-  //       Boolean(exists)
-  //     ) {
-  //       return false;
-  //     }
-  //     return true;
-  //   });
-
-  //   return filteredUsers;
-  // }
+    return filteredUsers;
+  }
 
   @Query((returns) => [Question])
   async getQuestions(@Ctx() context: Context) {
