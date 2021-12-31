@@ -204,7 +204,7 @@ export default class MutationClass {
         user.role != Role.TEAM_LEADER ||
         !team
       ) {
-        throw new Error('Invalid User');
+        return new Error('Invalid User');
       }
 
       if (Boolean(createOrderInput.referralCode)) {
@@ -216,7 +216,7 @@ export default class MutationClass {
             count: code.count + 1,
           });
         } else {
-          throw new Error('Invalid Referral code');
+          return new Error('Invalid Referral code');
         }
       }
       const options = {
@@ -226,16 +226,18 @@ export default class MutationClass {
         payment_capture: 1,
       };
       const response = await razorpay.orders.create(options);
+
       await TeamModel.findByIdAndUpdate(user.teamId, {
         teamName: createOrderInput.teamName,
       });
+
       return {
         id: response.id,
         currency: response.currency,
         amount: response.amount,
       };
     } catch (e) {
-      throw new Error(e);
+      return new Error(e);
     }
   }
 
