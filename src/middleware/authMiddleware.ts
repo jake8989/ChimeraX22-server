@@ -12,28 +12,19 @@ admin.initializeApp({
 });
 
 async function decodeIDToken(req: Request, res: Response, next: NextFunction) {
-  console.log(
-    '----------------------------------------------------------------------------------------------'
-  );
   const header = req.headers?.authorization;
-  // console.log(header);
   if (
     header !== 'Bearer null' &&
     req.headers?.authorization?.startsWith('Bearer ')
   ) {
     const idToken = req.headers.authorization.split('Bearer ')[1];
-
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
-      console.log('decodedToken');
       // console.log(decodedToken);
       req.uid = decodedToken.uid;
       req.email = decodedToken.email || '';
       req.name = decodedToken.name || '';
-      console.log(decodedToken.uid);
-      console.log(decodedToken.email);
-      console.log(decodedToken.name);
-      console.log('VERIFIED');
+      // console.log('VERIFIED');
     } catch (err) {
       console.log(err.message);
       return res.status(401).json({
@@ -41,17 +32,15 @@ async function decodeIDToken(req: Request, res: Response, next: NextFunction) {
       });
     }
   } else if (header == undefined || header === 'Bearer null') {
-    console.log('Token Missing');
     return res.status(400).json({
       message: 'Token Missing',
     });
   } else {
-    console.log('Invalid Header Format');
     return res.status(400).json({
       message: 'Invalid Header Format',
     });
   }
-  // next();
+  next();
 }
 
 export { decodeIDToken };

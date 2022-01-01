@@ -46,7 +46,7 @@ export class User {
   id?: string;
 
   @Field()
-  @prop({ required: true })
+  @prop({ required: false })
   password: string;
 
   @Field()
@@ -54,7 +54,7 @@ export class User {
   name?: string;
 
   @Field()
-  @prop({ required: true })
+  @prop({ required: false })
   email: string;
 
   @Field()
@@ -70,7 +70,7 @@ export class User {
   year?: number;
 
   @Field()
-  @prop({ required: true })
+  @prop({ required: false })
   strategy: string;
 
   @Field()
@@ -121,7 +121,7 @@ export class User {
   @prop({ default: 30 })
   timeLeft: number;
 
-  @prop({ default: '' })
+  @prop({ required: true })
   firebase_uid: string;
 
   @Field()

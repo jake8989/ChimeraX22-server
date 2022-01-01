@@ -10,6 +10,7 @@ import { graphqlHTTP } from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import { buildSchema } from 'type-graphql';
 import { decodeIDToken } from './middleware/authMiddleware';
+import firebaseRouter from './middleware/authRoutes';
 
 process.on('uncaughtException', function (err) {
   console.error(err);
@@ -25,7 +26,8 @@ app.use(cors());
 app.use(express.json());
 // app.use(decodeIDToken);
 
-app.use('/api', authRouter);
+// app.use('/api', authRouter);
+app.use('/auth', firebaseRouter);
 
 const schema = buildSchema({
   validate: false,
