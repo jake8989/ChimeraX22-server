@@ -1,40 +1,40 @@
-import { getModelForClass, prop, index } from "@typegoose/typegoose";
-import { Field, ObjectType, Int, registerEnumType } from "type-graphql";
-import { TeamStatus } from "./team";
+import { getModelForClass, prop, index } from '@typegoose/typegoose';
+import { Field, ObjectType, Int, registerEnumType } from 'type-graphql';
+import { TeamStatus } from './team';
 
 export enum Step {
-  REGISTER = "REGISTER",
-  CHOOSE_TEAM = "CHOOSE_TEAM",
-  PAYMENT = "PAYMENT",
-  TEST = "TEST",
+  REGISTER = 'REGISTER',
+  CHOOSE_TEAM = 'CHOOSE_TEAM',
+  PAYMENT = 'PAYMENT',
+  TEST = 'TEST',
 }
 
 export enum Role {
-  TEAM_LEADER = "TEAM_LEADER",
-  TEAM_HELPER = "TEAM_HELPER",
-  NOT_INITIALIZED = "NOT_INITIALIZED",
-  ADMIN = "ADMIN",
+  TEAM_LEADER = 'TEAM_LEADER',
+  TEAM_HELPER = 'TEAM_HELPER',
+  NOT_INITIALIZED = 'NOT_INITIALIZED',
+  ADMIN = 'ADMIN',
 }
 
 export enum UserQuizStatus {
-  NOT_STARTED = "NOT_STARTED",
-  STARTED = "STARTED",
-  ENDED = "ENDED",
+  NOT_STARTED = 'NOT_STARTED',
+  STARTED = 'STARTED',
+  ENDED = 'ENDED',
 }
 
 registerEnumType(Step, {
-  name: "Step",
-  description: "Step on which user is present",
+  name: 'Step',
+  description: 'Step on which user is present',
 });
 
 registerEnumType(Role, {
-  name: "Role",
-  description: "role of user in team",
+  name: 'Role',
+  description: 'role of user in team',
 });
 
 registerEnumType(UserQuizStatus, {
-  name: "UserQuizStatus",
-  description: "status of quiz",
+  name: 'UserQuizStatus',
+  description: 'status of quiz',
 });
 
 @ObjectType()
@@ -50,7 +50,7 @@ export class User {
   password: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   name?: string;
 
   @Field()
@@ -58,11 +58,11 @@ export class User {
   email: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   phone?: string;
 
   @Field({ nullable: true })
-  @prop({ default: "" })
+  @prop({ default: '' })
   college?: string;
 
   @Field((type) => Int)
@@ -78,15 +78,15 @@ export class User {
   registered: boolean;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   city: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   resetPasswordLink: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   teamId: string;
 
   @Field((type) => Step)
@@ -106,23 +106,26 @@ export class User {
   quizStatus: UserQuizStatus;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   quizStartTime: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   paymentId: string;
 
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   quizEndTime: string;
 
   @Field()
   @prop({ default: 30 })
   timeLeft: number;
 
+  @prop({ default: '' })
+  firebase_uid: string;
+
   @Field()
-  @prop({ default: "" })
+  @prop({ default: '' })
   metadata: string;
 }
 

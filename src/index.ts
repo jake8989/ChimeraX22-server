@@ -40,31 +40,27 @@ const schema = buildSchema({
   //authChecker: authorizationLevel
 });
 
-app.use(
-  '/graphql',
-
-  async (req, res, next) => {
-    const userID = req.uid;
-    let user: UserClass | null = null;
-    if (userID) {
-      try {
-        user = await User.findOne({ firebase_uid: userID });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-        return null;
-      }
+app.use('/graphql', decodeIDToken, async (req, res, next) => {
+  const userID = req.uid;
+  let user: UserClass | null = null;
+  if (userID) {
+    try {
+      user = await User.findOne({ firebase_uid: userID });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+      return null;
     }
-    const resolvedSchema = await schema;
-    return graphqlHTTP({
-      schema: resolvedSchema,
-      context: {
-        user,
-      },
-      graphiql: true,
-    })(req, res);
   }
-);
+  const resolvedSchema = await schema;
+  return graphqlHTTP({
+    schema: resolvedSchema,
+    context: {
+      user,
+    },
+    graphiql: true,
+  })(req, res);
+});
 
 mongoose
   .connect(process.env.DB_URL)
