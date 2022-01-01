@@ -9,6 +9,7 @@ import cors from 'cors';
 import { graphqlHTTP } from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import { buildSchema } from 'type-graphql';
+import { decodeIDToken } from './middleware/authMiddleware';
 
 process.on('uncaughtException', function (err) {
   console.error(err);
@@ -22,6 +23,7 @@ env.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(decodeIDToken);
 
 app.use('/api', authRouter);
 
@@ -42,12 +44,11 @@ app.use(
   '/graphql',
 
   async (req, res, next) => {
-    const token = req.get('authorization');
+    const userID = req.uid;
     let user: UserClass | null = null;
-    if (token) {
+    if (userID) {
       try {
-        const u: any = jwt.verify(token, process.env.JWT_SECRET);
-        user = await User.findOne({ _id: u._id });
+        user = await User.findOne({ firebase_uid: userID });
       } catch (error) {
         console.error(error);
         res.status(500).send(error);
