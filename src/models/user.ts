@@ -121,7 +121,7 @@ export class User {
   @prop({ default: 30 })
   timeLeft: number;
 
-  @prop({ required: true })
+  @prop({ required: true, unique: true })
   firebase_uid: string;
 
   @Field()

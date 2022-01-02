@@ -10,6 +10,17 @@ export const firebaseSignupController = async (
 ) => {
   const { uid, name, email, strategy } = req.body;
   try {
+    const existingUser = await UserModel.findOne({ firebase_uid: uid });
+    if (Boolean(existingUser))
+      return res
+        .status(200)
+        .json({
+          user: {
+            _id: existingUser._id,
+            email: existingUser.email,
+            step: existingUser.step,
+          },
+        });
     new UserModel({
       name: name,
       firebase_uid: uid,
@@ -19,9 +30,9 @@ export const firebaseSignupController = async (
       .save()
       .then((user) => {
         if (Boolean(user)) {
-          return res
-            .status(200)
-            .json({ user: { _id: user._id, email: user.email } });
+          return res.status(200).json({
+            user: { _id: user._id, email: user.email, step: user.step },
+          });
         } else {
           console.log('user not created');
         }
