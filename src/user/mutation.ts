@@ -46,23 +46,29 @@ export default class MutationClass {
     @Arg('userInfo') userInput: UserInput,
     @Ctx() context: Context
   ) {
-    const payload: Partial<UserInput> = {
-      ...userInput,
-    };
 
-    const user = await UserModel.findOneAndUpdate(
-      { email: context.user.email },
-      {
-        $set: { ...payload, step: Step.CHOOSE_TEAM },
-      },
-      {
-        new: true,
-      }
-    );
+    try {
+      const payload: Partial<UserInput> = {
+        ...userInput,
+      };
 
-    if (!user) return null;
+      const user = await UserModel.findOneAndUpdate(
+        { email: context.user.email },
+        {
+          $set: { ...payload, step: Step.CHOOSE_TEAM },
+        },
+        {
+          new: true,
+        }
+      );
 
-    return user;
+      if (!user) return null;
+
+      return user;
+    } catch (e) {
+      // console.log(e);
+      throw new Error('Something went wrong! try again');
+    }
   }
 
   @Mutation((returns) => Invitation)
@@ -70,17 +76,22 @@ export default class MutationClass {
     @Arg('invitationInput') invitationInput: InvitationInput,
     @Ctx() context: Context
   ) {
-    const invitation = await new InvitationModel({
-      receiversId: invitationInput.receiverId,
-      receiversName: invitationInput.receiverName,
-      receiversEmail: invitationInput.receiverEmail,
-      sendersId: context.user._id,
-      sendersEmail: context.user.email,
-      sendersName: context.user.name,
-      id: nanoid(),
-    }).save();
+    try {
+      const invitation = await new InvitationModel({
+        receiversId: invitationInput.receiverId,
+        receiversName: invitationInput.receiverName,
+        receiversEmail: invitationInput.receiverEmail,
+        sendersId: context.user._id,
+        sendersEmail: context.user.email,
+        sendersName: context.user.name,
+        id: nanoid(),
+      }).save();
 
-    return invitation;
+      return invitation;
+    } catch (e) {
+      // console.log(e);
+      throw new Error('Something went wrong! try again');
+    }
   }
 
   @Mutation((returns) => Team)
