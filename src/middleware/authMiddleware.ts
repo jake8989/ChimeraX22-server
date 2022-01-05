@@ -13,7 +13,7 @@ admin.initializeApp({
 
 async function decodeIDToken(req: Request, res: Response, next: NextFunction) {
   const header = req.headers?.authorization;
-  console.log('header:', header);
+  // console.log('header:', header);
 
   if (
     header !== 'Bearer' &&
@@ -22,8 +22,8 @@ async function decodeIDToken(req: Request, res: Response, next: NextFunction) {
     const idToken = req.headers.authorization.split('Bearer ')[1];
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
-      console.log('decodedToken');
-      console.log(decodedToken);
+      // console.log('decodedToken');
+      // console.log(decodedToken);
       req.uid = decodedToken.uid;
       req.email = decodedToken.email || '';
       req.name = decodedToken.name || '';

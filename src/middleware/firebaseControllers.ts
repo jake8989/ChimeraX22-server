@@ -1,7 +1,7 @@
 import UserModel, { User } from '../models/user';
 import * as express from 'express';
-import { nanoid } from 'nanoid';
 import env from 'dotenv';
+import { getStrategy } from '../utils/getStrategy';
 env.config();
 
 export const firebaseSignupController = async (
@@ -11,21 +11,22 @@ export const firebaseSignupController = async (
   const { uid, name, email, strategy } = req.body;
   try {
     const existingUser = await UserModel.findOne({ firebase_uid: uid });
-    if (Boolean(existingUser))
-      return res
-        .status(200)
-        .json({
-          user: {
-            _id: existingUser._id,
-            email: existingUser.email,
-            step: existingUser.step,
-          },
-        });
+    if (Boolean(existingUser)) {
+      // console.log('User Exists');
+      return res.status(200).json({
+        user: {
+          _id: existingUser._id,
+          email: existingUser.email,
+          step: existingUser.step,
+        },
+      });
+    }
+
     new UserModel({
       name: name,
       firebase_uid: uid,
       email: email,
-      strategy: strategy,
+      strategy: getStrategy(strategy),
     })
       .save()
       .then((user) => {
