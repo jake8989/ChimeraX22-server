@@ -111,4 +111,4 @@ dist
 #json keys
 client.json
 src/client.json
-
+src/utils/firebaseconfig.ts
