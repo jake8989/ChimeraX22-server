@@ -46,7 +46,6 @@ export default class MutationClass {
     @Arg('userInfo') userInput: UserInput,
     @Ctx() context: Context
   ) {
-
     try {
       const payload: Partial<UserInput> = {
         ...userInput,
@@ -371,33 +370,33 @@ export default class MutationClass {
 
       let score: number = 0;
 
-      // forEach(submitQuizInput.responses, (response) => {
-      //   const rightAnswer = questions.find(
-      //     (question) => question.id === response.questionId
-      //   );
+      submitQuizInput.responses.forEach((response) => {
+        const rightAnswer = questions.find(
+          (question) => question.id === response.questionId
+        );
 
-      //   const variations = rightAnswer.answer.trim().split(',');
-      //   // console.log(variations);
-      //   const exists = variations.find(
-      //     (ans) =>
-      //       ans.trim().toLowerCase() === response.answer.trim().toLowerCase()
-      //   );
-      //   if (rightAnswer.questionAnswerType === QuestionAnswerType.SINGLE) {
-      //     // console.log("score", score);
-      //     if (Boolean(exists)) score = score + 2;
-      //   } else {
-      //     const variations2 = rightAnswer.answer2.trim().split(',');
-      //     const exists2 = variations2.find(
-      //       (ans) =>
-      //         ans.trim().toLowerCase() === response.answer2.trim().toLowerCase()
-      //     );
+        const variations = rightAnswer.answer.trim().split(',');
+        // console.log(variations);
+        const exists = variations.find(
+          (ans) =>
+            ans.trim().toLowerCase() === response.answer.trim().toLowerCase()
+        );
+        if (rightAnswer.questionAnswerType === QuestionAnswerType.SINGLE) {
+          // console.log("score", score);
+          if (Boolean(exists)) score = score + 2;
+        } else {
+          const variations2 = rightAnswer.answer2.trim().split(',');
+          const exists2 = variations2.find(
+            (ans) =>
+              ans.trim().toLowerCase() === response.answer2.trim().toLowerCase()
+          );
 
-      //     if (Boolean(exists)) {
-      //       score = ++score;
-      //     }
-      //     if (Boolean(exists2)) score = ++score;
-      //   }
-      // });
+          if (Boolean(exists)) {
+            score = ++score;
+          }
+          if (Boolean(exists2)) score = ++score;
+        }
+      });
 
       const updatedTeam = TeamModel.findByIdAndUpdate(team._id, {
         score,
