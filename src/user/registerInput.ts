@@ -1,9 +1,9 @@
-import { InputType, Field, ObjectType, registerEnumType } from "type-graphql";
-import { Invitation } from "../models/invitation";
-import { QuestionAnswerType, QuestionType } from "../models/questions";
-import { QuestionResponse, TeamStatus } from "../models/team";
-import { type } from "os";
-import { UserQuizStatus } from "../models/user";
+import { InputType, Field, ObjectType, registerEnumType } from 'type-graphql';
+import { Invitation } from '../models/invitation';
+import { QuestionAnswerType, QuestionType } from '../models/questions';
+import { QuestionResponse, TeamStatus } from '../models/team';
+import { type } from 'os';
+import { UserQuizStatus } from '../models/user';
 
 @InputType()
 export class UserInput {
@@ -207,4 +207,15 @@ export class QuizDetailsResponse {
 export class StartQuizResponse {
   @Field()
   quizStartTime: string;
+}
+
+@InputType()
+export class ByPassPaymentInput {
+  @Field()
+  TeamLeaderEmail: String;
+
+  @Field()
+  TeamName: String;
+  @Field()
+  PaymentId: String;
 }

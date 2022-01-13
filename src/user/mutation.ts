@@ -8,7 +8,7 @@ import TeamModel, {
 } from '../models/team';
 import Razorpay from 'razorpay';
 import 'reflect-metadata';
-import { Resolver, Arg, Ctx, Mutation, Authorized } from 'type-graphql';
+import { Resolver, Arg, Ctx, Mutation, Authorized, Args } from 'type-graphql';
 import {
   UserInput,
   InvitationInput,
@@ -22,6 +22,7 @@ import {
   StartQuizResponse,
   CreateReferralCodeResponse,
   CreateReferralCodeInput,
+  ByPassPaymentInput,
 } from './registerInput';
 import ReferralCodeModel, { ReferralCode } from '../models/referralCodes';
 import InvitationModel, { Invitation, Status } from '../models/invitation';
@@ -32,6 +33,7 @@ import QuestionModel, {
   Question,
   QuestionAnswerType,
 } from '../models/questions';
+import { STATUS_CODES } from 'http';
 env.config();
 
 const razorpay = new Razorpay({
@@ -443,6 +445,41 @@ export default class MutationClass {
     } catch (e) {
       // console.log(e);
       throw new Error('Something went wrong! try again');
+    }
+  }
+  @Mutation((returns) => Team)
+  async byPassPayment(
+    @Arg('byPassPaymentInput') byPassPaymentInput: ByPassPaymentInput,
+    @Ctx() context: Context
+  ) {
+    try {
+      if (context.user.role != Role.ADMIN) throw new Error('Unauthorized');
+
+      const user = await UserModel.findOne({
+        email: byPassPaymentInput.TeamLeaderEmail,
+      });
+      if (!Boolean(user)) throw new Error('Invalid User');
+
+      if (user.step != Step.PAYMENT || user.role != Role.TEAM_LEADER)
+        throw new Error('Invalid Step or Role');
+
+      await UserModel.findByIdAndUpdate(user._id, {
+        step: Step.TEST,
+        paymentId: byPassPaymentInput.PaymentId,
+      });
+      const team = await TeamModel.findByIdAndUpdate(user.teamId, {
+        status: PaymentStatus.PAID,
+        teamName: byPassPaymentInput.TeamName,
+      });
+      if (team.teamHelpersId) {
+        await UserModel.findByIdAndUpdate(team.teamHelpersId, {
+          step: Step.TEST,
+          paymentId: byPassPaymentInput.PaymentId,
+        });
+      }
+      return team;
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }
