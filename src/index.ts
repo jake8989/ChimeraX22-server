@@ -11,6 +11,9 @@ import jwt from 'jsonwebtoken';
 import { buildSchema } from 'type-graphql';
 import { decodeIDToken } from './middleware/authMiddleware';
 import firebaseRouter from './middleware/authRoutes';
+import { countryCount } from './utils/countryCount';
+import { paidUsers } from './utils/paidUser';
+import { totalUsers } from './utils/totalUser';
 
 process.on('uncaughtException', function (err) {
   console.error(err);
@@ -40,6 +43,17 @@ const schema = buildSchema({
   dateScalarMode: 'timestamp',
 
   //authChecker: authorizationLevel
+});
+
+app.get('/updateSheet', async (req, res) => {
+  try {
+    await countryCount();
+    await paidUsers();
+    await totalUsers();
+    res.send('updating the sheets wait for few seconds');
+  } catch (e) {
+    res.send('Error, something went wrong');
+  }
 });
 
 app.use('/graphql', decodeIDToken, async (req, res, next) => {
