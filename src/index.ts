@@ -14,6 +14,7 @@ import firebaseRouter from './middleware/authRoutes';
 import { countryCount } from './utils/countryCount';
 import { paidUsers } from './utils/paidUser';
 import { totalUsers } from './utils/totalUser';
+import razorpayFilter from './utils/razorpayFilter';
 
 process.on('uncaughtException', function (err) {
   console.error(err);
@@ -45,16 +46,18 @@ const schema = buildSchema({
   //authChecker: authorizationLevel
 });
 
-app.get('/updateSheet', async (req, res) => {
-  try {
-    await countryCount();
-    await paidUsers();
-    await totalUsers();
-    res.send('updating the sheets wait for few seconds');
-  } catch (e) {
-    res.send('Error, something went wrong');
-  }
-});
+// app.get('/updateSheet', async (req, res) => {
+//   try {
+//     await countryCount();
+//     await paidUsers();
+//     await totalUsers();
+//     res.send('updating the sheets wait for few seconds');
+//   } catch (e) {
+//     res.send('Error, something went wrong');
+//   }
+// });
+
+// razorpayFilter();
 
 app.use('/graphql', decodeIDToken, async (req, res, next) => {
   const userID = req.uid;
