@@ -411,12 +411,20 @@ export default class MutationClass {
       throw new Error('Something went wrong! try again');
     }
   }
+
   @Mutation((returns) => StartQuizResponse)
   async startQuiz(@Ctx() context: Context) {
     try {
       const userId = context.user._id;
-      const currentTime = new Date().toISOString();
-      const user = await UserModel.findByIdAndUpdate(userId, {
+     let currentTime;
+     await axios
+       .get('https://worldtimeapi.org/api/timezone/Asia/Kolkata')
+       .then((response) => {
+         // console.log(response.data)
+         currentTime = response.data.datetime;
+       });
+    //  console.log(currentTime);
+      const user  = await UserModel.findByIdAndUpdate(userId, {
         quizStatus: UserQuizStatus.STARTED,
         quizStartTime: currentTime,
       });
