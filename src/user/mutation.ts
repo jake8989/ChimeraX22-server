@@ -351,9 +351,16 @@ export default class MutationClass {
       const userId = context.user._id;
       const user = await UserModel.findById(userId);
       const team = await TeamModel.findById(context.user.teamId);
+      let currentEndTime;
+      await axios
+        .get('https://worldtimeapi.org/api/timezone/Asia/Kolkata')
+        .then((response) => {
+          // console.log(response.data)
+          currentEndTime = response.data.datetime;
+        });
 
       await UserModel.findByIdAndUpdate(userId, {
-        quizEndTime: new Date().toISOString(),
+        quizEndTime: currentEndTime,
         quizStatus: UserQuizStatus.ENDED,
       });
       if (user.role === Role.TEAM_HELPER) {
@@ -411,11 +418,19 @@ export default class MutationClass {
       throw new Error('Something went wrong! try again');
     }
   }
+
   @Mutation((returns) => StartQuizResponse)
   async startQuiz(@Ctx() context: Context) {
     try {
       const userId = context.user._id;
-      const currentTime = new Date().toISOString();
+      let currentTime;
+      await axios
+        .get('https://worldtimeapi.org/api/timezone/Asia/Kolkata')
+        .then((response) => {
+          // console.log(response.data)
+          currentTime = response.data.datetime;
+        });
+      //  console.log(currentTime);
       const user = await UserModel.findByIdAndUpdate(userId, {
         quizStatus: UserQuizStatus.STARTED,
         quizStartTime: currentTime,
