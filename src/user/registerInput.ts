@@ -183,6 +183,9 @@ export class TeamResponse {
 
   @Field((type) => TeamStatus)
   status: TeamStatus;
+
+  @Field((type) => String, { nullable: true })
+  teamName: String;
 }
 
 @ObjectType()

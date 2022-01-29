@@ -132,7 +132,10 @@ export default class QueryClass {
   @Query((returns) => TeamResponse)
   async getTeamDetails(@Ctx() context: Context) {
     try {
-      if (context.user.step != Step.PAYMENT) {
+      if (
+        context.user.step == Step.REGISTER ||
+        context.user.step == Step.CHOOSE_TEAM
+      ) {
         throw new Error('Invalid Step');
       }
       const team = await TeamModel.findById(context.user.teamId);
@@ -146,6 +149,7 @@ export default class QueryClass {
             email: leader.email,
           },
           status: team.teamStatus,
+          teamName: team.teamName ?? '',
         };
       }
       const helper = await UserModel.findById(team.teamHelpersId);
@@ -162,6 +166,7 @@ export default class QueryClass {
           name: helper.name,
           email: helper.email,
         },
+        teamName: team.teamName ?? '',
       };
     } catch (e) {
       // console.log(e);
