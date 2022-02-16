@@ -14,7 +14,7 @@ import firebaseRouter from './middleware/authRoutes';
 import { countryCount } from './utils/countryCount';
 import { paidUsers } from './utils/paidUser';
 import { totalUsers } from './utils/totalUser';
-import razorpayFilter from './utils/razorpayFilter';
+import { filter } from './utils/filter';
 
 process.on('uncaughtException', function (err) {
   console.error(err);
@@ -57,8 +57,6 @@ const schema = buildSchema({
 //   }
 // });
 
-// razorpayFilter();
-
 app.use('/graphql', decodeIDToken, async (req, res, next) => {
   const userID = req.uid;
   let user: UserClass | null = null;
@@ -86,6 +84,9 @@ mongoose
   .then(() =>
     app.listen(process.env.PORT || 8080, async () => {
       console.log(`listening on port ${process.env.PORT || 8080}`);
+      // razorpayFilter();
+      // getUsers();
+      // filter();
     })
   )
   .catch((error) => {
