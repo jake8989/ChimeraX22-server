@@ -65,6 +65,10 @@ export class User {
   @prop({ default: '' })
   college?: string;
 
+  @Field({ nullable: true })
+  @prop({ default: '' })
+  referralCode?: string;
+
   @Field((type) => Int)
   @prop({ default: 0 })
   year?: number;

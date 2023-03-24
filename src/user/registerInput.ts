@@ -21,6 +21,9 @@ export class UserInput {
 
   @Field({ nullable: true })
   college: string;
+
+  @Field({ nullable: true })
+  referralCode: string;
 }
 
 @InputType()
